@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM Bruna Nail | Painel Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Bruna Nail CRM</h1>
+        <p>Gestão Premium de Clientes e Financeiro</p>
+    </header>
+
+    <div id="notificacaoBar" onclick="pedirPermissao()">🔔 Ativar Notificações de Agenda (Recomendado)</div>
+
+    <div class="dashboard">
+        <div class="card">
+            <h3>Entradas Totais</h3>
+            <p id="totalEntradas">R$ 0,00</p>
+        </div>
+        <div class="card">
+            <h3>Total Gastos</h3>
+            <p id="totalGastos" style="color:var(--danger)">R$ 0,00</p>
+        </div>
+        <div class="card">
+            <h3>Lucro Real</h3>
+            <p id="lucroLiquido" style="color:var(--success)">R$ 0,00</p>
+        </div>
+    </div>
+
+    <div class="section" style="border-top: 5px solid var(--accent);">
+        <h2>👥 Central de Relacionamento (CRM)</h2>
+        <div id="avisos14dias"></div>
+        <input type="text" id="buscaCRM" placeholder="Pesquisar cliente por nome ou celular...">
+        
+        <div class="table-responsive">
+            <table id="tabCRM">
+                <thead>
+                    <tr>
+                        <th style="width: 25%;">Cliente</th>
+                        <th style="width: 20%;">WhatsApp</th>
+                        <th style="width: 15%;">Visitas</th>
+                        <th style="width: 20%;">Última Vez</th>
+                        <th style="width: 20%;">Ação</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="section" style="border-top: 5px solid var(--success);">
+        <h2>📝 Registrar Novo Atendimento</h2>
+        <div class="grid-form">
+            <input type="text" id="manNome" placeholder="Nome Completo da Cliente">
+            <input type="tel" id="manTel" placeholder="WhatsApp (DDD+Número)">
+            <input type="date" id="manData">
+            <input type="text" id="manHora" placeholder="Horário (Ex: 10:00 ou 14:30)">
+        </div>
+
+        <label class="form-label">Serviços Realizados:</label>
+        <div id="container-servicos-checkbox" class="servicos-grid"></div>
+        <button class="btn btn-success" onclick="agendarManual()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16" style="margin-right: 8px;"><path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.061 3.978l-.112 1.398L.02 14.652a.5.5 0 0 0 .633.633l1.171-.21 1.398-.112a7.864 7.864 0 0 0 3.976 1.061C12.367 16 16 12.367 16 7.994c0-2.13-.827-4.132-2.399-5.668zM7.994 14.52a6.573 6.573 0 0 1-3.356-.92l-.24-.144-1.407.112.112-1.407-.156-.24a6.574 6.574 0 0 1-.918-3.356c.004-3.611 2.939-6.544 6.55-6.544 1.75 0 3.394.68 4.628 1.916"/></svg>
+            Finalizar Atendimento e Enviar Confirmação
+        </button>
+    </div>
+
+    <div class="section" style="border-top: 5px solid var(--accent);">
+        <h2>🧩 Gerenciar Serviços</h2>
+        <div class="grid-form">
+            <input type="text" id="novoServicoNome" placeholder="Nome do serviço">
+            <input type="number" id="novoServicoPreco" placeholder="Preço do serviço" min="0" step="0.01">
+            <button class="btn btn-success" onclick="adicionarServico()">Adicionar Novo Serviço</button>
+        </div>
+        <div class="table-responsive">
+            <table id="tabServicos">
+                <thead>
+                    <tr>
+                        <th style="width: 40%;">Serviço</th>
+                        <th style="width: 25%;">Preço</th>
+                        <th style="width: 20%;">Salvar</th>
+                        <th style="width: 15%;">Ação</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>📌 Próximos Atendimentos Confirmados</h2>
+        <button class="btn btn-backup" onclick="exportarCSV()">📥 Baixar Relatório (Excel/CSV)</button>
+        <div class="table-responsive">
+            <table id="tabAgendamentos">
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>WhatsApp</th>
+                        <th>Serviço</th>
+                        <th>Data</th>
+                        <th>Hora</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="section" style="border-top: 5px solid var(--danger);">
+        <h2>💸 Controle de Despesas / Saídas</h2>
+        <div class="grid-form">
+            <input type="text" id="gastoDesc" placeholder="Descrição da Despesa">
+            <input type="number" id="gastoVal" placeholder="Valor R$">
+            <select id="gastoCat">
+                <option value="Produtos">Produtos e Materiais</option>
+                <option value="Supermercado">Supermercado</option>
+                <option value="Pessoais">Pessoais</option>
+            </select>
+            <button class="btn btn-danger" onclick="addGasto()">Registrar Saída</button>
+        </div>
+        
+        <div class="table-responsive">
+            <table id="tabGastosTotal">
+                <thead>
+                    <tr>
+                        <th style="width: 25%;">Categoria</th>
+                        <th style="width: 45%;">Descrição</th>
+                        <th style="width: 20%;">Valor</th>
+                        <th style="width: 10%;">Ação</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="admin-shell">
+    <aside class="admin-sidebar">
+        <div class="admin-brand">Bruna Alcantara</div>
+
+        <div class="admin-nav-group">
+            <button class="admin-nav-item active" data-target="relatorios"><span class="admin-menu-icon">R</span>Relatórios</button>
+            <button class="admin-nav-item" data-target="performance"><span class="admin-menu-icon">P</span>Performance</button>
+            <button class="admin-nav-item" data-target="financeiro"><span class="admin-menu-icon">F</span>Resumo Financeiro</button>
+            <button class="admin-nav-item" data-target="clientes"><span class="admin-menu-icon">C</span>Melhores Clientes</button>
+            <button class="admin-nav-item" data-target="configuracoes"><span class="admin-menu-icon">G</span>Configurações</button>
+            <button class="admin-nav-item" data-target="suporte"><span class="admin-menu-icon">S</span>Suporte</button>
+        </div>
+
+        <div class="admin-nav-group">
+            <button class="admin-nav-item" data-target="agenda"><span class="admin-menu-icon">A</span>Agenda</button>
+            <button class="admin-nav-item" data-target="cobrancas"><span class="admin-menu-icon">$</span>Cobranças</button>
+            <button class="admin-nav-item" data-target="comandas"><span class="admin-menu-icon">C</span>Comandas</button>
+            <button class="admin-nav-item" data-target="mensagens"><span class="admin-menu-icon">M</span>Msgs Pré-definidas</button>
+            <button class="admin-nav-item" data-target="anamneses"><span class="admin-menu-icon">P</span>Clientes &amp; Anamneses</button>
+            <button class="admin-nav-item" data-target="servicos"><span class="admin-menu-icon">S</span>Serviços &amp; Pacotes</button>
+            <button class="admin-nav-item" data-target="estoque"><span class="admin-menu-icon">E</span>Produtos &amp; Estoque</button>
+            <button class="admin-nav-item" data-target="despesas"><span class="admin-menu-icon">D</span>Despesas</button>
+            <button class="admin-nav-item" data-target="comissao"><span class="admin-menu-icon">P</span>Profissionais &amp; Comissão</button>
+        </div>
+    </aside>
+
+    <main class="admin-content">
+        <section id="relatorios" class="admin-section active">
+            <div class="admin-section-header">
+                <div>
+                    <span class="eyebrow">Sessão</span>
+                    <h3>Relatórios</h3>
+                </div>
+                <button class="save-section-btn" type="button">Salvar</button>
+            </div>
+
+            <div class="admin-editor-grid">
+                <div class="field">
+                    <label>Título da sessão</label>
+                    <input type="text" data-field="title" value="Relatórios">
+                </div>
+                <div class="field field-wide">
+                    <label>Resumo da sessão</label>
+                    <textarea data-field="summary">Aguardando dados do sistema...</textarea>
+                </div>
+            </div>
+
+            <div class="admin-grid">
+                <div class="admin-stat"><span>Total de clientes</span><strong><input type="text" data-stat="stat1" value="0"></strong></div>
+                <div class="admin-stat"><span>Atendimentos</span><strong><input type="text" data-stat="stat2" value="0"></strong></div>
+                <div class="admin-stat"><span>Faturamento</span><strong><input type="text" data-stat="stat3" value="R$ 0,00"></strong></div>
+                <div class="admin-stat"><span>Taxa de retorno</span><strong><input type="text" data-stat="stat4" value="0%"></strong></div>
+            </div>
+
+            <div class="admin-panel-list">
+                <div class="admin-panel-card">
+                    <h4>Resumo do mês</h4>
+                    <textarea data-card="card1">Aguardando primeiros clientes e agendamentos...</textarea>
+                </div>
+                <div class="admin-panel-card">
+                    <h4>Relatórios rápidos</h4>
+                    <textarea data-card="card2">Aguardando uso do sistema...</textarea>
+                </div>
+            </div>
+        </section>
+
+        <section id="performance" class="admin-section">
+            <div class="admin-section-header">
+                <div>
+                    <span class="eyebrow">Sessão</span>
+                    <h3>Performance</h3>
+                </div>
+                <button class="save-section-btn" type="button">Salvar</button>
+            </div>
+
+            <div class="admin-editor-grid">
+                <div class="field">
+                    <label>Título da sessão</label>
+                    <input type="text" data-field="title" value="Performance">
+                </div>
+                <div class="field field-wide">
+                    <label>Resumo</label>
+                    <textarea data-field="summary">Aguardando dados reais do dia a dia.</textarea>
+                </div>
+            </div>
+
+            <div class="admin-grid">
+                <div class="admin-stat"><span>Meta mensal</span><strong><input type="text" data-stat="stat1" value="0"></strong></div>
+                <div class="admin-stat"><span>Alcance</span><strong><input type="text" data-stat="stat2" value="0%"></strong></div>
+                <div class="admin-stat"><span>Ticket médio</span><strong><input type="text" data-stat="stat3" value="R$ 0,00"></strong></div>
+                <div class="admin-stat"><span>Conversão</span><strong><input type="text" data-stat="stat4" value="0%"></strong></div>
+            </div>
+
+            <div class="admin-panel-card">
+                <h4>Indicadores de desempenho</h4>
+                <textarea data-card="card1">Aguardando uso do sistema...</textarea>
+            </div>
+        </section>
+
+        <section id="financeiro" class="admin-section">
+            <div class="admin-section-header">
+                <div>
+                    <span class="eyebrow">Sessão</span>
+                    <h3>Resumo Financeiro</h3>
+                </div>
+                <button class="save-section-btn" type="button">Salvar</button>
+            </div>
+            <div class="admin-editor-grid">
+                <div class="field"><label>Título da sessão</label><input type="text" data-field="title" value="Resumo Financeiro"></div>
+                <div class="field field-wide"><label>Resumo</label><textarea data-field="summary">Aguardando movimentações reais.</textarea></div>
+            </div>
+            <div class="admin-grid">
+                <div class="admin-stat"><span>Entradas</span><strong><input type="text" data-stat="stat1" value="R$ 0,00"></strong></div>
+                <div class="admin-stat"><span>Saídas</span><strong><input type="text" data-stat="stat2" value="R$ 0,00"></strong></div>
+                <div class="admin-stat"><span>Lucro</span><strong><input type="text" data-stat="stat3" value="R$ 0,00"></strong></div>
+                <div class="admin-stat"><span>Saldo</span><strong><input type="text" data-stat="stat4" value="R$ 0,00"></strong></div>
+            </div>
+            <div class="admin-panel-card">
+                <h4>Controle financeiro</h4>
+                <textarea data-card="card1">Ainda não há despesas registradas.</textarea>
+            </div>
+        </section>
+
+        <section id="clientes" class="admin-section">
+            <div class="admin-section-header">
+                <div><span class="eyebrow">Sessão</span><h3>Melhores Clientes</h3></div>
+                <button class="save-section-btn" type="button">Salvar</button>
+            </div>
+            <div class="admin-editor-grid">
+                <div class="field"><label>Título da sessão</label><input type="text" data-field="title" value="Melhores Clientes"></div>
+                <div class="field field-wide"><label>Resumo</label><textarea data-field="summary">Aguardando os primeiros clientes ativos.</textarea></div>
+            </div>
+            <div class="admin-panel-list">
+                <div class="admin-panel-card"><h4>Top 1</h4><textarea data-card="card1">Aguardando primeiro cliente...</textarea></div>
+                <div class="admin-panel-card"><h4>Top 2</h4><textarea data-card="card2">Aguardando segundo cliente...</textarea></div>
+                <div class="admin-panel-card"><h4>Top 3</h4><textarea data-card="card3">Aguardando terceiro cliente...</textarea></div>
+            </div>
+        </section>
+
+        <section id="configuracoes" class="admin-section">
+            <div class="admin-section-header">
+                <div><span class="eyebrow">Sessão</span><h3>Configurações</h3></div>
+                <button class="save-section-btn" type="button">Salvar</button>
+            </div>
+            <div class="admin-editor-grid">
+                <div class="field"><label>Título da sessão</label><input type="text" data-field="title" value="Configurações"></div>
+                <div class="field field-wide"><label>Resumo</label><textarea data-field="summary">Configurações da empresa e preferências do sistema.</textarea></div>
+            </div>
+            <div class="admin-panel-list">
+                <div class="admin-panel-card">
+                    <h4>Perfil da empresa</h4>
+                    <textarea data-card="card1">Aguardando preenchimento pela dona do site.</textarea>
+                </div>
+                <div class="admin-panel-card">
+                    <h4>Preferências</h4>
+                    <textarea data-card="card2">Aguardando ajustes da proprietária.</textarea>
+                </div>
+            </div>
+        </section>
+
+        <section id="suporte" class="admin-section">
+            <div class="admin-section-header">
+                <div><span class="eyebrow">Sessão</span><h3>Suporte</h3></div>
+                <button class="save-section-btn" type="button">Salvar</button>
+            </div>
+            <div class="admin-editor-grid">
+                <div class="field"><label>Título da sessão</label><input type="text" data-field="title" value="Suporte"></div>
+                <div class="field field-wide"><label>Resumo</label><textarea data-field="summary">Central de ajuda e comunicação com a equipe de atendimento.</textarea></div>
+            </div>
+            <div class="admin-panel-list">
+                <div class="admin-panel-card"><h4>Tickets ativos</h4><textarea data-card="card1">Aguardando solicitações.</textarea></div>
+                <div class="admin-panel-card"><h4>Base de ajuda</h4><textarea data-card="card2">Aguardando conteúdo da dona do site.</textarea></div>
+                <div class="admin-panel-card"><h4>Contato</h4><textarea data-card="card3">Aguardando informações do contato oficial.</textarea></div>
+            </div>
+        </section>
+
+        <section id="agenda" class="admin-section">
+            <div class="admin-section-header">
+                <div><span class="eyebrow">Sessão</span><h3>Agenda</h3></div>
+                <button class="save-section-btn" type="button">Salvar</button>
+            </div>
+            <div class="admin-editor-grid">
+                <div class="field"><label>Título da sessão</label><input type="text" data-field="title" value="Agenda"></div>
+                <div class="field field-wide"><label>Resumo</label><textarea data-field="summary">Acompanhe os próximos atendimentos em tempo real.</textarea></div>
+            </div>
+            <div class="admin-panel-list">
+                <div class="admin-panel-card"><h4>Hoje</h4><textarea data-card="card1">Aguardando primeiro agendamento.</textarea></div>
+                <div class="admin-panel-card"><h4>Próximos</h4><textarea data-card="card2">Aguardando próximos atendimentos.</textarea></div>
+                <div class="admin-panel-card"><h4>Reagendamentos</h4><textarea data-card="card3">Aguardando dados de confirmação.</textarea></div>
+            </div>
+        </section>
+
+        <section id="cobrancas" class="admin-section">
+            <div class="admin-section-header">
+                <div><span class="eyebrow">Sessão</span><h3>Cobranças</h3></div>
+                <button class="save-section-btn" type="button">Salvar</button>
+            </div>
+            <div class="admin-editor-grid">
+                <div class="field"><label>Título da sessão</label><input type="text" data-field="title" value="Cobranças"></div>
+                <div class="field field-wide"><label>Resumo</label><textarea data-field="summary">Controle de pagamentos em aberto e recebimentos.</textarea></div>
+            </div>
+            <div class="admin-panel-list">
+                <div class="admin-panel-card"><h4>Em aberto</h4><textarea data-card="card1">Nenhuma cobrança registrada ainda.</textarea></div>
+                <div class="admin-panel-card"><h4>Recebidas</h4><textarea data-card="card2">Aguardando primeiro recebimento.</textarea></div>
+                <div class="admin-panel-card"><h4>Lembretes</h4><textarea data-card="card3">Aguardando mensagens automáticas.</textarea></div>
+            </div>
+        </section>
+
+        <section id="comandas" class="admin-section">
+            <div class="admin-section-header">
+                <div><span class="eyebrow">Sessão</span><h3>Comandas</h3></div>
+                <button class="save-section-btn" type="button">Salvar</button>
+            </div>
+            <div class="admin-editor-grid">
+                <div class="field"><label>Título da sessão</label><input type="text" data-field="title" value="Comandas"></div>
+                <div class="field field-wide"><label>Resumo</label><textarea data-field="summary">Acompanhamento das comandas em andamento e entregas.</textarea></div>
+            </div>
+            <div class="admin-panel-list">
+                <div class="admin-panel-card"><h4>Ativas</h4><textarea data-card="card1">Aguardando primeira comanda.</textarea></div>
+                <div class="admin-panel-card"><h4>Entregues</h4><textarea data-card="card2">Aguardando registro de entregas.</textarea></div>
+                <div class="admin-panel-card"><h4>Atrasadas</h4><textarea data-card="card3">Aguardando primeiro acompanhamento.</textarea></div>
+            </div>
+        </section>
+
+        <section id="mensagens" class="admin-section">
+            <div class="admin-section-header">
+                <div><span class="eyebrow">Sessão</span><h3>Mensagens Pré-definidas</h3></div>
+                <button class="save-section-btn" type="button">Salvar</button>
+            </div>
+            <div class="admin-editor-grid">
+                <div class="field"><label>Título da sessão</label><input type="text" data-field="title" value="Mensagens Pré-definidas"></div>
+                <div class="field field-wide"><label>Resumo</label><textarea data-field="summary">Textos para confirmação, lembrete e agradecimento.</textarea></div>
+            </div>
+            <div class="admin-panel-list">
+                <div class="admin-panel-card"><h4>Confirmação</h4><textarea data-card="card1">Aguardando mensagem padrão da dona.</textarea></div>
+                <div class="admin-panel-card"><h4>Relembrete</h4><textarea data-card="card2">Aguardando mensagem de lembrete.</textarea></div>
+                <div class="admin-panel-card"><h4>Obrigado</h4><textarea data-card="card3">Aguardando agradecimento oficial.</textarea></div>
+            </div>
+        </section>
+
+        <section id="anamneses" class="admin-section">
+            <div class="admin-section-header">
+                <div><span class="eyebrow">Sessão</span><h3>Clientes &amp; Anamneses</h3></div>
+                <button class="save-section-btn" type="button">Salvar</button>
+            </div>
+            <div class="admin-editor-grid">
+                <div class="field"><label>Título da sessão</label><input type="text" data-field="title" value="Clientes &amp; Anamneses"></div>
+                <div class="field field-wide"><label>Resumo</label><textarea data-field="summary">Dados dos clientes e histórias gravadas no sistema.</textarea></div>
+            </div>
+            <div class="admin-panel-list">
+                <div class="admin-panel-card"><h4>Base de clientes</h4><textarea data-card="card1">Aguardando primeiros cadastros.</textarea></div>
+                <div class="admin-panel-card"><h4>Histórico</h4><textarea data-card="card2">Aguardando registro de visitas.</textarea></div>
+                <div class="admin-panel-card"><h4>Anotações</h4><textarea data-card="card3">Aguardando primeiras observações.</textarea></div>
+            </div>
+        </section>
+
+        <section id="servicos" class="admin-section">
+            <div class="admin-section-header">
+                <div><span class="eyebrow">Sessão</span><h3>Serviços &amp; Pacotes</h3></div>
+                <button class="save-section-btn" type="button">Salvar</button>
+            </div>
+            <div class="admin-editor-grid">
+                <div class="field"><label>Título da sessão</label><input type="text" data-field="title" value="Serviços &amp; Pacotes"></div>
+                <div class="field field-wide"><label>Resumo</label><textarea data-field="summary">Serviços e combos usados no salão.</textarea></div>
+            </div>
+            <div class="admin-panel-list">
+                <div class="admin-panel-card"><h4>Mais vendidos</h4><textarea data-card="card1">Aguardando primeiro serviço.</textarea></div>
+                <div class="admin-panel-card"><h4>Pacotes</h4><textarea data-card="card2">Aguardando criação de pacotes.</textarea></div>
+                <div class="admin-panel-card"><h4>Preço base</h4><textarea data-card="card3">Aguardando atualização de valores.</textarea></div>
+            </div>
+        </section>
+
+        <section id="estoque" class="admin-section">
+            <div class="admin-section-header">
+                <div><span class="eyebrow">Sessão</span><h3>Produtos &amp; Estoque</h3></div>
+                <button class="save-section-btn" type="button">Salvar</button>
+            </div>
+            <div class="admin-editor-grid">
+                <div class="field"><label>Título da sessão</label><input type="text" data-field="title" value="Produtos &amp; Estoque"></div>
+                <div class="field field-wide"><label>Resumo</label><textarea data-field="summary">Itens disponíveis e reposição do estoque.</textarea></div>
+            </div>
+            <div class="admin-panel-list">
+                <div class="admin-panel-card"><h4>Produtos em alta</h4><textarea data-card="card1">Aguardando primeiro produto.</textarea></div>
+                <div class="admin-panel-card"><h4>Estoque</h4><textarea data-card="card2">Aguardando controle de itens.</textarea></div>
+                <div class="admin-panel-card"><h4>Pedidos</h4><textarea data-card="card3">Aguardando reposições.</textarea></div>
+            </div>
+        </section>
+
+        <section id="despesas" class="admin-section">
+            <div class="admin-section-header">
+                <div><span class="eyebrow">Sessão</span><h3>Despesas</h3></div>
+                <button class="save-section-btn" type="button">Salvar</button>
+            </div>
+            <div class="admin-editor-grid">
+                <div class="field"><label>Título da sessão</label><input type="text" data-field="title" value="Despesas"></div>
+                <div class="field field-wide"><label>Resumo</label><textarea data-field="summary">Gastos fixos e variáveis do salão.</textarea></div>
+            </div>
+            <div class="admin-panel-list">
+                <div class="admin-panel-card"><h4>Fixas</h4><textarea data-card="card1">Aguardando registros de despesas fixas.</textarea></div>
+                <div class="admin-panel-card"><h4>Variáveis</h4><textarea data-card="card2">Aguardando despesas variáveis.</textarea></div>
+                <div class="admin-panel-card"><h4>Saldo</h4><textarea data-card="card3">Aguardando movimentação financeira.</textarea></div>
+            </div>
+        </section>
+
+        <section id="comissao" class="admin-section">
+            <div class="admin-section-header">
+                <div><span class="eyebrow">Sessão</span><h3>Profissionais &amp; Comissão</h3></div>
+                <button class="save-section-btn" type="button">Salvar</button>
+            </div>
+            <div class="admin-editor-grid">
+                <div class="field"><label>Título da sessão</label><input type="text" data-field="title" value="Profissionais &amp; Comissão"></div>
+                <div class="field field-wide"><label>Resumo</label><textarea data-field="summary">Equipe, comissão e pagamentos por atendimento.</textarea></div>
+            </div>
+            <div class="admin-panel-list">
+                <div class="admin-panel-card"><h4>Equipe</h4><textarea data-card="card1">Aguardando registro da equipe.</textarea></div>
+                <div class="admin-panel-card"><h4>Comissão</h4><textarea data-card="card2">Aguardando comissão ativa.</textarea></div>
+                <div class="admin-panel-card"><h4>Pagamentos</h4><textarea data-card="card3">Aguardando próximos pagamentos.</textarea></div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

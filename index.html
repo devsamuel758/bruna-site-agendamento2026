@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bruna Nail Design | Beauty Experience</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+  <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">Modo Escuro</button>
+
+  <header>
+    <div>
+      <p>Bem-vinda ao seu momento</p>
+      <h1>Bruna Nail</h1>
+      <a href="#agendamento-section" class="btn-hero">Reservar Horário</a>
+    </div>
+  </header>
+
+  <section>
+    <h2>Arte em Unhas</h2>
+    <div class="galeria-container">
+      <img src="./image/image.png" alt="Unhas">
+      <img src="./image/image copy.png" alt="Unhas">
+      <img src="./image/image copy 2.png" alt="Unhas">
+      <img src="./image/image copy 3.png" alt="Unhas">
+      <img src="./image/image copy 4.png" alt="Unhas">
+    </div>
+  </section>
+
+  <section id="agendamento-section">
+    <h2>Agendamento Online</h2>
+    <div id="agendamento">
+      <form id="formAgendamento">
+        <label>Nome Completo</label>
+        <input type="text" id="nome" placeholder="Seu nome" required>
+
+        <label>WhatsApp</label>
+        <input type="tel" id="telefone" placeholder="(00) 00000-0000" required>
+
+        <label>Serviços Desejados</label>
+        <div id="listaServicos" class="checkbox-group"></div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <div>
+            <label for="data">Data</label>
+            <input type="date" id="data" required onchange="verificarDisponibilidade()" style="width: 100%;">
+          </div>
+          <div>
+            <label for="hora">Horário</label>
+            <select id="hora" name="hora" required disabled style="width: 100%;">
+              <option value="">Data primeiro...</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" class="button-confirm">Confirmar Agendamento</button>
+      </form>
+    </div>
+  </section>
+
+  <button class="admin-access-btn" onclick="acessoAdmin()">Acesso Administrativo</button>
+  <a href="https://wa.me/558592532670" class="whatsapp" target="_blank">Zap</a>
+  <a href="https://www.instagram.com/brunaalcantaraunhas/" class="instagram" target="_blank">Insta</a>
+
+  <div id="modalSenha" class="modal-overlay">
+    <div class="modal-content">
+      <h3>Acesso Restrito</h3>
+      <input type="password" id="inputSenha" placeholder="Senha" style="margin: 20px 0; width: 100%; text-align: center;">
+      <div style="display: flex; gap: 10px;">
+        <button onclick="fecharModal()" style="flex:1; padding: 10px;">Sair</button>
+        <button onclick="validarSenha()" style="flex:1; padding: 10px; background: var(--primary); color: white; border: none;">Entrar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="qr-instagram-wrap" style="text-align: center; margin: 30px auto 40px;">
+    <p style="margin-bottom: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text);">Escaneie para seguir no Instagram</p>
+    <a href="https://www.instagram.com/brunaalcantaraunhas/" target="_blank" rel="noopener noreferrer" aria-label="Instagram da Bruna">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://www.instagram.com/brunaalcantaraunhas/" alt="QR Code do Instagram da Bruna" style="width: 180px; height: 180px; border-radius: 16px; box-shadow: 0 10px 24px rgba(0,0,0,0.12); background: white; padding: 10px;">
+    </a>
+  </div>
+
+  <script src="index.js"></script>
+</body>
+
+</html>
